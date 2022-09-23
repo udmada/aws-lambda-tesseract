@@ -1,6 +1,6 @@
-import { App, Duration, Stack, DockerImage } from 'aws-cdk-lib';
-import { Function, LayerVersion, Code, Runtime, CfnLayerVersion } from 'aws-cdk-lib/aws-lambda';
-import { LambdaRestApi, LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
+import { App, Duration, Stack, DockerImage, CfnOutput } from 'aws-cdk-lib';
+import { Function, LayerVersion, Code, Runtime } from 'aws-cdk-lib/aws-lambda';
+import { LambdaRestApi } from 'aws-cdk-lib/aws-apigateway';
 import * as path from 'path';
 
 const app = new App();
@@ -51,3 +51,7 @@ const api = new LambdaRestApi(stack, 'ocr-api', {
 
 const ocr = api.root.addResource('ocr');
 ocr.addMethod('POST');
+
+new CfnOutput(stack, "ApiEndpoint", {
+    value: api.url,
+});
