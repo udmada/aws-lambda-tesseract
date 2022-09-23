@@ -9,5 +9,5 @@ def main(evt, ctx):
     url = evt["body"]
     res = requests.get(url)
     img = Image.open(BytesIO(res.content))
-    txt = pytesseract.image_to_string(img, lang="eng", timeout=2)
+    txt = pytesseract.image_to_string(img, lang="eng", timeout=30)
     return {"statusCode": 200, "body": txt}
