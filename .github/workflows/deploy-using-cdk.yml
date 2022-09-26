@@ -4,6 +4,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-20.04
+    permissions:
+      packages: write
+      contents: read
+      id-token: write
     strategy:
       matrix:
         node-version: [18]
@@ -15,7 +19,7 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@master
       with:
-        role-to-assume: arn:aws:iam::450264810237:role/DeployRole
+        role-to-assume: ${{ secrets.AWS_GITHUB_OIDC_ARN }}
         aws-region: ${{ secrets.AWS_REGION }}
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
@@ -23,6 +27,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
     - name: Install dependencies
-      run: pnpm install
-    - name: CDK synth
-      run: pnpm run cdk synth
+      run: pnpm install && pnpm prune --prod
+    - name: CDK deploy
+      run: pnpm run cdk deploy --require-approval never

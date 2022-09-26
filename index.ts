@@ -1,8 +1,6 @@
 import { App, Duration, Stack, DockerImage, CfnOutput } from 'aws-cdk-lib';
-import { ManagedPolicy } from 'aws-cdk-lib/aws-iam';
 import { Function, LayerVersion, Code, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { LambdaRestApi } from 'aws-cdk-lib/aws-apigateway';
-import { GithubActionsIdentityProvider, GithubActionsRole } from 'aws-cdk-github-oidc';
 import * as path from 'path';
 
 const app = new App();
@@ -56,17 +54,3 @@ ocr.addMethod('POST');
 new CfnOutput(stack, "ApiEndpoint", {
     value: api.url,
 });
-
-const provider = new GithubActionsIdentityProvider(stack, 'GithubProvider');
-
-const deployRole = new GithubActionsRole(stack, 'DeployRole', {
-    provider: provider,           // reference into the OIDC provider
-    owner: 'udmada',            // your repository owner (organization or user) name
-    repo: 'aws-lambda-tesseract', // your repository name (without the owner name)
-    roleName: 'DeployRole',
-    description: 'This role deploys stuff to AWS',
-    maxSessionDuration: Duration.hours(1),
-});
-deployRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName(
-    'AdministratorAccess',
-));
