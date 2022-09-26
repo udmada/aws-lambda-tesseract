@@ -15,7 +15,7 @@
     "url": "https://github.com/udmada/lambda-tesseract"
   },
   "scripts": {
-    "synth": "npx cdk synth"
+    "cdk": "cdk"
   },
   "jest": {
     "transform": {
